@@ -36,9 +36,8 @@ HBITMAP hBitmapMuchaZywa2, hBitmapMuchaTrup2;
 const int iNumOfMuchas=5;
 Mucha *pMucha[iNumOfMuchas];
 //Mucha *pMucha1 = new Mucha();
-
-
-
+int iTimeIncs;
+bool bAllMuchasDead;
 
 void draw(HWND handle, HBITMAP hBitmap, int iX, int iY, int iWidth, int iHeight ) {
   HDC hDC; // uchwyt do kontekstu urz¹dzenia 
@@ -100,7 +99,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
       pMucha1->iMuchaPredkoscX = 50;
       pMucha1->iMuchaPredkoscY = 30;       */
       dt = 0.1;
-
+      iTimeIncs = 0;
       HBITMAP hBitmapBackgrnd;
       hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP1));
       draw(hwndDig, hBitmapBackgrnd, 0, 0, 1500, 1500);
@@ -169,6 +168,8 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
         HBITMAP hBitmapBackgrnd;
         hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP1));
         draw(hwndDig, hBitmapBackgrnd, 0, 0, 1500, 1500);
+
+        iTimeIncs = 0;
         return TRUE;
       }
       
@@ -216,24 +217,14 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
   case WM_TIMER: {
     switch (wParam) {
     case ID_TIMER_MUCHA:
+      bAllMuchasDead = true;
       for (int i = 0; i < iNumOfMuchas; i++) {
 
         if (pMucha[i]->bIsMuchaZywa) {
+          bAllMuchasDead = false;
           HBITMAP hBitmapBackgrnd;
           hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP5));
           draw(hwndDig, hBitmapBackgrnd, pMucha[i]->iMuchaX, pMucha[i]->iMuchaY, pMucha[i]->iMuchaWidth, pMucha[i]->iMuchaHeight); //Wybranie bitmapy w kontekscie 
-
-
-
-
-
-
-          pMucha[i]->iMuchaX += pMucha[i]->iMuchaPredkoscX *dt;
-          pMucha[i]->iMuchaY += pMucha[i]->iMuchaPredkoscY *dt;
-          if (pMucha[i]->iMuchaX > 800)pMucha[i]->iMuchaPredkoscX = -abs(pMucha[i]->iMuchaPredkoscX);
-          if (pMucha[i]->iMuchaX < 0)pMucha[i]->iMuchaPredkoscX = abs(pMucha[i]->iMuchaPredkoscX);
-          if (pMucha[i]->iMuchaY > 550)pMucha[i]->iMuchaPredkoscY = -abs(pMucha[i]->iMuchaPredkoscY);
-          if (pMucha[i]->iMuchaY < 0)pMucha[i]->iMuchaPredkoscY = abs(pMucha[i]->iMuchaPredkoscY);
 
           int iRand = rand();
           if (iRand % 3 == 0)  pMucha[i]->iMuchaPredkoscX += iRand % 23 - 11;
@@ -248,12 +239,19 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
             if (pMucha[i]->iMuchaPredkoscY < 0)pMucha[i]->iMuchaPredkoscY = (2 * pMucha[i]->iMuchaPredkoscY - 80) / 3;
             else  pMucha[i]->iMuchaPredkoscY = (2 * pMucha[i]->iMuchaPredkoscY + 80) / 3;
           }
-          // if (iRand % 91 == 0) iMuchaPredkoscX /= 2;
-          // if (iRand % 103 == 0) iMuchaPredkoscY /= 2;
+
+          pMucha[i]->iMuchaX += pMucha[i]->iMuchaPredkoscX *dt;
+          pMucha[i]->iMuchaY += pMucha[i]->iMuchaPredkoscY *dt;
+
+          if (pMucha[i]->iMuchaX > 800)pMucha[i]->iMuchaPredkoscX = -abs(pMucha[i]->iMuchaPredkoscX);
+          if (pMucha[i]->iMuchaX < 0)pMucha[i]->iMuchaPredkoscX = abs(pMucha[i]->iMuchaPredkoscX);
+          if (pMucha[i]->iMuchaY > 550)pMucha[i]->iMuchaPredkoscY = -abs(pMucha[i]->iMuchaPredkoscY);
+          if (pMucha[i]->iMuchaY < 0)pMucha[i]->iMuchaPredkoscY = abs(pMucha[i]->iMuchaPredkoscY);
+
+
+
         }
-
-
-
+      }
 
 
         //  while (iMuchaX > 850 - iMuchaWidth || iMuchaX < 5 || iMuchaY > 530 - iMuchaHeight || iMuchaY < 5) {
@@ -266,16 +264,23 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
           if (iMuchaX > 850 - iMuchaWidth)iMuchaAngle = (180+ iMuchaAngle) % 360;
           if (iMuchaX < 5 )iMuchaAngle = (180+ iMuchaAngle) % 360;
           if (iMuchaY > 530 - iMuchaHeight)iMuchaAngle = (180 + iMuchaAngle) % 360;
-          if (iMuchaY < 5)iMuchaAngle = (180 + iMuchaAngle) % 360;
-              */
-         }
-        RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE);
+          if (iMuchaY < 5)iMuchaAngle = (180 + iMuchaAngle) % 360;    */
+
+
+        iTimeIncs++;
+        if (bAllMuchasDead == false) {
+          wsprintf(buffer, "%d:%d.%d", iTimeIncs / 6000, iTimeIncs / 100, iTimeIncs % 100);
+          SetWindowText(hwndText, buffer);
+
+          RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE);
+        }
+
+        break;
       
-      break;
-    }}
+    }
 
     return TRUE;
-
+  }
 
   case WM_CLOSE:
     DestroyWindow(hwndDig);
@@ -298,7 +303,7 @@ int WINAPI WinMain(HINSTANCE histance, HINSTANCE hPrevinstance, PSTR szCmdLine, 
 {
   x = 1, y = 1000;
   HWND hwndMainWindow = CreateDialog(histance, MAKEINTRESOURCE(IDD_MAINVIEW), NULL, DialogProc);
-  //hwndText = GetDlgItem(hwndMainWindow, IDC_BUTTON4);
+  hwndText = GetDlgItem(hwndMainWindow, IDC_BUTTONREVIVE);
 
   SetTimer(hwndMainWindow, ID_TIMER_MUCHA, dt*100, NULL);
 

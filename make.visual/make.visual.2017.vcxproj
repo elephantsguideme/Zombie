@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\source\bialetlo.bmp" />
+    <Image Include="..\source\bialeTloDuze.bmp" />
     <Image Include="..\source\bitmap1.bmp" />
     <Image Include="..\source\bitmap4.bmp" />
     <Image Include="..\source\mucha.bmp" />
