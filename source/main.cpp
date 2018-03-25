@@ -18,6 +18,33 @@ bool bIsMuchaZywa;
 int iMuchaPredkoscX, iMuchaPredkoscY;
 int iMuchaPredkosc, iMuchaAngle;
 double dt;
+HBITMAP hBitmapMuchaZywa, hBitmapMuchaTrup;
+HBITMAP hBitmapMuchaZywa2, hBitmapMuchaTrup2;
+
+void draw(HWND handle, HBITMAP hBitmap, int iX, int iY, int iWidth, int iHeight ) {
+  HDC hDC; // uchwyt do kontekstu urz¹dzenia 
+  hDC = GetDC(handle); // pobranie uchwytu do kontekstu okna 
+                        //BitBlt(hDC, 0, 0, 800, 600, GetDC(0), 0, 0, SRCCOPY);  //GetDC(0) pobranie kontekstu       
+                        //ekranu 
+
+
+  HDC hDCBitmap;
+  hDCBitmap = CreateCompatibleDC(hDC); //Utworzenie kopatybilengo kontekstu  
+  
+    SelectObject(hDCBitmap, hBitmap); //Wybranie bitmapy w kontekscie 
+  
+  BitBlt(hDC, iX, iY, iWidth, iHeight, hDCBitmap, 0, 0, SRCCOPY);
+
+
+
+  DeleteDC(hDCBitmap); //Usuniecie kontekstu 
+  DeleteObject(hBitmap);
+ 
+  ReleaseDC(handle, hDC); // Zwolnienie kontekstu urz¹dz
+
+  return ;
+}
+
 
 INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -31,14 +58,20 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
     
     case WM_INITDIALOG:
       srand(time(NULL)); //losowanie ziarna RNG
-      iMuchaX = rand() % 400;
+      iMuchaX = rand() % 600;
       iMuchaY = rand() %400;
-      iMuchaHeight = 400;
-      iMuchaWidth = 400;
+      iMuchaHeight = 100;
+      iMuchaWidth = 100;
       bIsMuchaZywa = true;
       iMuchaAngle = rand() % 360;
       iMuchaPredkosc = 50;
+      iMuchaPredkoscX = 50;
+      iMuchaPredkoscY = 30;
       dt = 0.1;
+
+      HBITMAP hBitmapBackgrnd;
+      hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP1));
+      draw(hwndDig, hBitmapBackgrnd, 0, 0, 1500, 1500);
     return TRUE;
                 
     
@@ -95,7 +128,11 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
       case IDC_BUTTONREVIVE:
 
         bIsMuchaZywa = true;
-        
+        HBITMAP hBitmapBackgrnd;
+        hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP1));
+        draw(hwndDig, hBitmapBackgrnd, 0, 0, 1500, 1500); //Wybranie bitmapy w kontekscie 
+        iMuchaX = rand() % 600;
+        iMuchaY = rand() % 400;
         return TRUE;
       }
       
@@ -120,55 +157,75 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
 
   case WM_PAINT:
     
-    HDC hDC; // uchwyt do kontekstu urz¹dzenia 
-    hDC = GetDC(hwndDig); // pobranie uchwytu do kontekstu okna 
-                                      //BitBlt(hDC, 0, 0, 800, 600, GetDC(0), 0, 0, SRCCOPY);  //GetDC(0) pobranie kontekstu       
-                                      //ekranu 
+   
 
-    HBITMAP hBitmapMuchaZywa, hBitmapMuchaTrup;
-    hBitmapMuchaZywa = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP2));
-    hBitmapMuchaTrup = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP3));
-    HDC hDCBitmap;
-    hDCBitmap = CreateCompatibleDC(hDC); //Utworzenie kopatybilengo kontekstu  
+    HBITMAP hBitmapMucha;
+   
+  
     if (bIsMuchaZywa) {
-      SelectObject(hDCBitmap, hBitmapMuchaZywa); //Wybranie bitmapy w kontekscie 
+      hBitmapMucha = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP2));
     }
-    else SelectObject(hDCBitmap, hBitmapMuchaTrup); //
-    BitBlt(hDC, iMuchaX, iMuchaY, iMuchaWidth, iMuchaHeight, hDCBitmap, 0, 0, SRCCOPY);
+    else hBitmapMucha = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP3));
+
+    draw(hwndDig, hBitmapMucha,  iMuchaX, iMuchaY, iMuchaWidth, iMuchaHeight); //Wybranie bitmapy w kontekscie 
 
 
-
-    DeleteDC(hDCBitmap); //Usuniecie kontekstu 
-    DeleteObject(hBitmapMuchaZywa);
-    DeleteObject(hBitmapMuchaTrup);
-    ReleaseDC(hwndDig, hDC); // Zwolnienie kontekstu urz¹dz
-    break;
+   
+    break;     
     return TRUE;
 
   case WM_TIMER: {
     switch (wParam) {
     case ID_TIMER_MUCHA:
-      int iNewX;
-      int iNewY;
-      
+      if (bIsMuchaZywa) {
+        HBITMAP hBitmapBackgrnd;
+        hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP5));
+        draw(hwndDig, hBitmapBackgrnd, iMuchaX, iMuchaY, iMuchaWidth, iMuchaHeight); //Wybranie bitmapy w kontekscie 
 
-       
 
-      while (iMuchaX > 850 - iMuchaWidth || iMuchaX < 5 || iMuchaY > 530 - iMuchaHeight || iMuchaY < 5) {
-        iMuchaAngle = (iMuchaAngle + 90) % 360;
+
+
+
+
+        iMuchaX += iMuchaPredkoscX *dt;
+        iMuchaY += iMuchaPredkoscY *dt;
+        if (iMuchaX > 800)iMuchaPredkoscX = -abs(iMuchaPredkoscX);
+        if (iMuchaX < 0)iMuchaPredkoscX = abs(iMuchaPredkoscX);
+        if (iMuchaY > 550)iMuchaPredkoscY = -abs(iMuchaPredkoscY);
+        if (iMuchaY < 0)iMuchaPredkoscY = abs(iMuchaPredkoscY);
+                         
+        int iRand=rand();
+        if (iRand % 3 == 0)  iMuchaPredkoscX += iRand % 23 - 11;
+        if (iRand % 4 == 0)  iMuchaPredkoscY += iRand % 19 - 9;
+        if (iRand % 17 == 0)  iMuchaPredkoscY += iMuchaPredkoscX/3;
+        if (iRand % 19 == 0)  iMuchaPredkoscX -= iMuchaPredkoscY/3;
+        if (iRand % 31 == 0) {
+          if(iMuchaPredkoscX<0)iMuchaPredkoscX = (2*iMuchaPredkoscX - 80) / 3;
+          else  iMuchaPredkoscX = (2*iMuchaPredkoscX + 80) / 3;
+        }
+        if (iRand % 37 == 0) {
+          if (iMuchaPredkoscY<0)iMuchaPredkoscY = (2*iMuchaPredkoscY - 80) / 3;
+          else  iMuchaPredkoscY = (2*iMuchaPredkoscY + 80) / 3;
+        }
+       // if (iRand % 91 == 0) iMuchaPredkoscX /= 2;
+       // if (iRand % 103 == 0) iMuchaPredkoscY /= 2;
+                    
+
+
+        //  while (iMuchaX > 850 - iMuchaWidth || iMuchaX < 5 || iMuchaY > 530 - iMuchaHeight || iMuchaY < 5) {
+          //  iMuchaAngle = (iMuchaAngle + 90) % 360; }
+               /*
+            iMuchaX += iMuchaPredkosc * cos(iMuchaAngle * 3.1416 / 180)*dt;
+          iMuchaY += iMuchaPredkosc * sin(iMuchaAngle * 3.1416 / 180)*dt;
+
+
+          if (iMuchaX > 850 - iMuchaWidth)iMuchaAngle = (180+ iMuchaAngle) % 360;
+          if (iMuchaX < 5 )iMuchaAngle = (180+ iMuchaAngle) % 360;
+          if (iMuchaY > 530 - iMuchaHeight)iMuchaAngle = (180 + iMuchaAngle) % 360;
+          if (iMuchaY < 5)iMuchaAngle = (180 + iMuchaAngle) % 360;
+              */
+        RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE);
       }
-
-        iMuchaX += iMuchaPredkosc * cos(iMuchaAngle * 3.1416 / 180)*dt;
-      iMuchaY += iMuchaPredkosc * sin(iMuchaAngle * 3.1416 / 180)*dt;
-
-      /*
-      if (iMuchaX > 850 - iMuchaWidth)iMuchaAngle = (180+ iMuchaAngle) % 360;
-      if (iMuchaX < 5 )iMuchaAngle = (180+ iMuchaAngle) % 360;
-      if (iMuchaY > 530 - iMuchaHeight)iMuchaAngle = (180 + iMuchaAngle) % 360;
-      if (iMuchaY < 5)iMuchaAngle = (180 + iMuchaAngle) % 360;
-      */
-      RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE);
-
       break;
     }}
 
@@ -198,7 +255,7 @@ int WINAPI WinMain(HINSTANCE histance, HINSTANCE hPrevinstance, PSTR szCmdLine, 
   HWND hwndMainWindow = CreateDialog(histance, MAKEINTRESOURCE(IDD_MAINVIEW), NULL, DialogProc);
   //hwndText = GetDlgItem(hwndMainWindow, IDC_BUTTON4);
 
-  SetTimer(hwndMainWindow, ID_TIMER_MUCHA, dt*500, NULL);
+  SetTimer(hwndMainWindow, ID_TIMER_MUCHA, dt*100, NULL);
 
   ShowWindow(hwndMainWindow, iCmdShow);
   hinst = histance;

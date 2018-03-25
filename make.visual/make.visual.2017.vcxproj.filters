@@ -32,5 +32,10 @@
     <Image Include="..\source\mucha.bmp" />
     <Image Include="mucharip.bmp" />
     <Image Include="..\source\mucharip.bmp" />
+    <Image Include="..\source\mucha2.bmp" />
+    <Image Include="..\source\mucharip2.bmp" />
+    <Image Include="..\source\bitmap4.bmp" />
+    <Image Include="bialetlo.bmp" />
+    <Image Include="..\source\bialetlo.bmp" />
   </ItemGroup>
 </Project>
