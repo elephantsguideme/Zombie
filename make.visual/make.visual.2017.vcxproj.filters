@@ -38,5 +38,7 @@
     <Image Include="bialetlo.bmp" />
     <Image Include="..\source\bialetlo.bmp" />
     <Image Include="..\source\bialeTloDuze.bmp" />
+    <Image Include="dziura.bmp" />
+    <Image Include="..\source\dziura.bmp" />
   </ItemGroup>
 </Project>
