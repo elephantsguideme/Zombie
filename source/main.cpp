@@ -13,6 +13,7 @@
 
 HWND hwndText;
 HWND hwndSecondaryWindow;
+HWND hwndMainWindow;
 CHAR buffer[100];
 int klikX, klikY, x, y, iCostam;
 int iWindowWidth, iWindowHeight;
@@ -25,30 +26,17 @@ HINSTANCE hinst;
 double dt;
 HBITMAP hBitmapMuchaZywa, hBitmapMuchaTrup;
 HBITMAP hBitmapMuchaZywa2, hBitmapMuchaTrup2;
-const int iNumOfMuchas=10;
+const int iNumOfMuchas=5;
 double dTimeRebirth;
 //Mucha *pMucha1 = new Mucha();
 int iTimeIncs;
 bool bAllMuchasDead;
 
-class sMucha
-{
-public:
-	int iMuchaX, iMuchaY;
-	int iMuchaWidth, iMuchaHeight;
-	bool bIsMuchaZywa;
-	int iMuchaPredkoscX, iMuchaPredkoscY;
-	int iMuchaSzybkosc, iMuchaAngle;
 
-};
-sMucha *pmchMucha[iNumOfMuchas];
 
 void draw(HWND handle, HBITMAP hBitmap, int iX, int iY, int iWidth, int iHeight ) {
   HDC hDC; // uchwyt do kontekstu urz¹dzenia 
-  hDC = GetDC(handle); // pobranie uchwytu do kontekstu okna 
-                        //BitBlt(hDC, 0, 0, 800, 600, GetDC(0), 0, 0, SRCCOPY);  //GetDC(0) pobranie kontekstu       
-                        //ekranu 
-
+  hDC = GetDC(handle); 
 
   HDC hDCBitmap;
   hDCBitmap = CreateCompatibleDC(hDC); //Utworzenie kopatybilengo kontekstu  
@@ -56,9 +44,6 @@ void draw(HWND handle, HBITMAP hBitmap, int iX, int iY, int iWidth, int iHeight 
     SelectObject(hDCBitmap, hBitmap); //Wybranie bitmapy w kontekscie 
   
   BitBlt(hDC, iX, iY, iWidth, iHeight, hDCBitmap, 0, 0, SRCCOPY);
-
-
-
   DeleteDC(hDCBitmap); //Usuniecie kontekstu 
   DeleteObject(hBitmap);
  
@@ -66,6 +51,51 @@ void draw(HWND handle, HBITMAP hBitmap, int iX, int iY, int iWidth, int iHeight 
 
   return ;
 }
+
+class sMucha
+{
+public:
+  int iMuchaX, iMuchaY;
+  int iMuchaWidth, iMuchaHeight;
+  bool bIsMuchaZywa;
+  int iMuchaPredkoscX, iMuchaPredkoscY;
+  int iMuchaSzybkosc, iMuchaAngle;
+
+  void muchaDraw() {
+    HBITMAP hBitmapBackgrnd;
+    hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP5));
+    draw(hwndMainWindow, hBitmapBackgrnd, this->iMuchaX, this->iMuchaY, this->iMuchaWidth, this->iMuchaHeight);
+  }
+
+  void muchaChange(int iRand) {             
+      this->iMuchaPredkoscX += iRand % 23 - 11;
+      this->iMuchaPredkoscY += iRand % 19 - 9;         
+    if (iRand % 5 == 0)  this->iMuchaPredkoscY += this->iMuchaPredkoscX / 3;
+    if (iRand % 7 == 0)  this->iMuchaPredkoscX -= this->iMuchaPredkoscY / 3;
+    
+    if (iRand % 9 == 0) {
+      if (this->iMuchaPredkoscX < 0)this->iMuchaPredkoscX = (2 * this->iMuchaPredkoscX - 80) / 3;
+      else  this->iMuchaPredkoscX = (2 * this->iMuchaPredkoscX + 80) / 3;
+    }
+    if (iRand % 11 == 0) {
+      if (this->iMuchaPredkoscY < 0)this->iMuchaPredkoscY = (2 * this->iMuchaPredkoscY - 80) / 3;
+      else  this->iMuchaPredkoscY = (2 * this->iMuchaPredkoscY + 80) / 3;
+    }
+      }
+
+  void muchaMove(){
+    this->iMuchaX += this->iMuchaPredkoscX *dt;
+  this->iMuchaY += this->iMuchaPredkoscY *dt;
+  }
+
+  void muchaCorrect() {
+    if (this->iMuchaX > iWindowWidth - this->iMuchaWidth)this->iMuchaPredkoscX = -abs(this->iMuchaPredkoscX);
+    if (this->iMuchaX < 0)this->iMuchaPredkoscX = abs(this->iMuchaPredkoscX);
+    if (this->iMuchaY > iWindowHeight - this->iMuchaHeight)this->iMuchaPredkoscY = -abs(this->iMuchaPredkoscY);
+    if (this->iMuchaY < 0)this->iMuchaPredkoscY = abs(this->iMuchaPredkoscY);
+  }
+};
+sMucha *pmchMucha[iNumOfMuchas];
 
 
 INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -92,16 +122,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
         pmchMucha[i]->iMuchaPredkoscX = rand() % 80;
         pmchMucha[i]->iMuchaPredkoscY = rand() % 80;
       }
-      /*
-      pMucha1->iMuchaX = rand() % 600;
-      pMucha1->iMuchaY = rand() %400;
-      pMucha1->iMuchaHeight = 100;
-      pMucha1->iMuchaWidth = 100;
-      pMucha1->bIsMuchaZywa = true;
-      pMucha1->iMuchaAngle = rand() % 360;
-      pMucha1->iMuchaSzybkosc = 50;
-      pMucha1->iMuchaPredkoscX = 50;
-      pMucha1->iMuchaPredkoscY = 30;       */
+      
       dt = 0.1;
 	  dTimeRebirth = 10;
       iTimeIncs = 0;
@@ -179,75 +200,74 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
 
   case WM_TIMER: {
     switch (wParam) {
-	case ID_TIMER_MUCHA: {
-		bAllMuchasDead = true;
-		for (int i = 0; i < iNumOfMuchas; i++) {
+    case ID_TIMER_MUCHA: {
+      bAllMuchasDead = true;
+      for (int i = 0; i < iNumOfMuchas; i++) {
 
-			if (pmchMucha[i]->bIsMuchaZywa) {
-				bAllMuchasDead = false;
-				HBITMAP hBitmapBackgrnd;
-				hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP5));
-				draw(hwndDig, hBitmapBackgrnd, pmchMucha[i]->iMuchaX, pmchMucha[i]->iMuchaY, pmchMucha[i]->iMuchaWidth, pmchMucha[i]->iMuchaHeight); //Wybranie bitmapy w kontekscie 
+        if (pmchMucha[i]->bIsMuchaZywa) {
+          bAllMuchasDead = false;
+          pmchMucha[i]->muchaDraw();
+          
+          int iRand = rand();
+          if (iRand % 4 == 0)      pmchMucha[i]->muchaChange(iRand);
+               /*
+          if (iRand % 3 == 0)  pmchMucha[i]->iMuchaPredkoscX += iRand % 23 - 11;
+          if (iRand % 4 == 0)  pmchMucha[i]->iMuchaPredkoscY += iRand % 19 - 9;
+          if (iRand % 17 == 0)  pmchMucha[i]->iMuchaPredkoscY += pmchMucha[i]->iMuchaPredkoscX / 3;
+          if (iRand % 19 == 0)  pmchMucha[i]->iMuchaPredkoscX -= pmchMucha[i]->iMuchaPredkoscY / 3;
+          if (iRand % 31 == 0) {
+            if (pmchMucha[i]->iMuchaPredkoscX < 0)pmchMucha[i]->iMuchaPredkoscX = (2 * pmchMucha[i]->iMuchaPredkoscX - 80) / 3;
+            else  pmchMucha[i]->iMuchaPredkoscX = (2 * pmchMucha[i]->iMuchaPredkoscX + 80) / 3;
+          }
+          if (iRand % 37 == 0) {
+            if (pmchMucha[i]->iMuchaPredkoscY < 0)pmchMucha[i]->iMuchaPredkoscY = (2 * pmchMucha[i]->iMuchaPredkoscY - 80) / 3;
+            else  pmchMucha[i]->iMuchaPredkoscY = (2 * pmchMucha[i]->iMuchaPredkoscY + 80) / 3;
+          }                                      */
+          pmchMucha[i]->muchaMove();
+          pmchMucha[i]->muchaCorrect();
 
-				int iRand = rand();
-				if (iRand % 3 == 0)  pmchMucha[i]->iMuchaPredkoscX += iRand % 23 - 11;
-				if (iRand % 4 == 0)  pmchMucha[i]->iMuchaPredkoscY += iRand % 19 - 9;
-				if (iRand % 17 == 0)  pmchMucha[i]->iMuchaPredkoscY += pmchMucha[i]->iMuchaPredkoscX / 3;
-				if (iRand % 19 == 0)  pmchMucha[i]->iMuchaPredkoscX -= pmchMucha[i]->iMuchaPredkoscY / 3;
-				if (iRand % 31 == 0) {
-					if (pmchMucha[i]->iMuchaPredkoscX < 0)pmchMucha[i]->iMuchaPredkoscX = (2 * pmchMucha[i]->iMuchaPredkoscX - 80) / 3;
-					else  pmchMucha[i]->iMuchaPredkoscX = (2 * pmchMucha[i]->iMuchaPredkoscX + 80) / 3;
-				}
-				if (iRand % 37 == 0) {
-					if (pmchMucha[i]->iMuchaPredkoscY < 0)pmchMucha[i]->iMuchaPredkoscY = (2 * pmchMucha[i]->iMuchaPredkoscY - 80) / 3;
-					else  pmchMucha[i]->iMuchaPredkoscY = (2 * pmchMucha[i]->iMuchaPredkoscY + 80) / 3;
-				}
-
-				pmchMucha[i]->iMuchaX += pmchMucha[i]->iMuchaPredkoscX *dt;
-				pmchMucha[i]->iMuchaY += pmchMucha[i]->iMuchaPredkoscY *dt;
-
-				if (pmchMucha[i]->iMuchaX > iWindowWidth - pmchMucha[i]->iMuchaWidth)pmchMucha[i]->iMuchaPredkoscX = -abs(pmchMucha[i]->iMuchaPredkoscX);
-				if (pmchMucha[i]->iMuchaX < 0)pmchMucha[i]->iMuchaPredkoscX = abs(pmchMucha[i]->iMuchaPredkoscX);
-				if (pmchMucha[i]->iMuchaY > iWindowHeight - pmchMucha[i]->iMuchaHeight)pmchMucha[i]->iMuchaPredkoscY = -abs(pmchMucha[i]->iMuchaPredkoscY);
-				if (pmchMucha[i]->iMuchaY < 0)pmchMucha[i]->iMuchaPredkoscY = abs(pmchMucha[i]->iMuchaPredkoscY);
+        
+          
+         
 
 
 
-			}
-		}
+        }
+      }
 
 
 
 
-		iTimeIncs++;
-		if (bAllMuchasDead == false) {
-			wsprintf(buffer, "%d:%d.%d", iTimeIncs / 6000, (iTimeIncs / 100) % 60, iTimeIncs % 100);
-			SetWindowText(hwndText, buffer);
+      iTimeIncs++;
+      if (bAllMuchasDead == false) {
+        wsprintf(buffer, "%d:%d.%d", iTimeIncs / 6000, (iTimeIncs / 100) % 60, iTimeIncs % 100);
+        SetWindowText(hwndText, buffer);
 
-			RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE);
-		}
+        RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE);
+      }
 
-		break;
-	}
-
-	case ID_TIMER_REBIRTH:{
-		for (int i = 0; i < iNumOfMuchas; i++) {
-			if (pmchMucha[i]->bIsMuchaZywa == false) {
-				HBITMAP hBitmapBackgrnd;
-				hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP5));
-				draw(hwndDig, hBitmapBackgrnd, pmchMucha[i]->iMuchaX, pmchMucha[i]->iMuchaY, pmchMucha[i]->iMuchaWidth, pmchMucha[i]->iMuchaHeight);
-				pmchMucha[i]->iMuchaX = rand() % (iWindowWidth - pmchMucha[i]->iMuchaWidth);
-				pmchMucha[i]->iMuchaY= rand() % (iWindowHeight- pmchMucha[i]->iMuchaHeight);
-
-				pmchMucha[i]->iMuchaPredkoscX = rand() % 80;
-				pmchMucha[i]->iMuchaPredkoscY = rand() % 80;
-				pmchMucha[i]->bIsMuchaZywa = true;
-			}
-		}
-		break;
-	}
+      break;
     }
 
+                         /*case ID_TIMER_REBIRTH:{
+                           for (int i = 0; i < iNumOfMuchas; i++) {
+                             if (pmchMucha[i]->bIsMuchaZywa == false) {
+                               HBITMAP hBitmapBackgrnd;
+                               hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP5));
+                               draw(hwndDig, hBitmapBackgrnd, pmchMucha[i]->iMuchaX, pmchMucha[i]->iMuchaY, pmchMucha[i]->iMuchaWidth, pmchMucha[i]->iMuchaHeight);
+                               pmchMucha[i]->iMuchaX = rand() % (iWindowWidth - pmchMucha[i]->iMuchaWidth);
+                               pmchMucha[i]->iMuchaY= rand() % (iWindowHeight- pmchMucha[i]->iMuchaHeight);
+
+                               pmchMucha[i]->iMuchaPredkoscX = rand() % 80;
+                               pmchMucha[i]->iMuchaPredkoscY = rand() % 80;
+                               pmchMucha[i]->bIsMuchaZywa = true;
+                             }
+                           }
+                           break;
+                         }
+                         
+                                  */
+    }
     return TRUE;
   }
 
@@ -280,19 +300,14 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 
 
-
-
-
-
-
 int WINAPI WinMain(HINSTANCE histance, HINSTANCE hPrevinstance, PSTR szCmdLine, int iCmdShow)
 {
   x = 1, y = 1000;
-  HWND hwndMainWindow = CreateDialog(histance, MAKEINTRESOURCE(IDD_MAINVIEW), NULL, DialogProc);
+  hwndMainWindow = CreateDialog(histance, MAKEINTRESOURCE(IDD_MAINVIEW), NULL, DialogProc);
   hwndText = GetDlgItem(hwndMainWindow, IDC_BUTTONREVIVE);
 
   SetTimer(hwndMainWindow, ID_TIMER_MUCHA, dt*100, NULL);
-  SetTimer(hwndMainWindow, ID_TIMER_REBIRTH, dTimeRebirth * 1000, NULL);
+  //SetTimer(hwndMainWindow, ID_TIMER_REBIRTH, dTimeRebirth * 1000, NULL);
 
   ShowWindow(hwndMainWindow, iCmdShow);
   hinst = histance;
