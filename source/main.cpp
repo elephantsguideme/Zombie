@@ -5,7 +5,7 @@
 #include <math.h>
 #include "res.h"
 
-#define ID_TIMER_MUCHA 2018
+#define ID_TIMER_MAIN 2018
 #define ID_TIMER_REBIRTH 2019
 
 
@@ -18,17 +18,13 @@ CHAR buffer[100];
 int klikX, klikY, x, y, iCostam;
 int iWindowWidth, iWindowHeight;
 HINSTANCE hinst;
-//int iMuchaX, iMuchaY;
-//int iMuchaWidth, iMuchaHeight;
-//bool bIsMuchaZywa;
-//int iMuchaPredkoscX, iMuchaPredkoscY;
-//int iMuchaSzybkosc, iMuchaAngle;                   
+                 
 double dt;
 HBITMAP hBitmapMuchaZywa, hBitmapMuchaTrup;
 HBITMAP hBitmapMuchaZywa2, hBitmapMuchaTrup2;
 const int iNumOfMuchas=5;
 double dTimeRebirth;
-//Mucha *pMucha1 = new Mucha();
+
 int iTimeIncs;
 bool bAllMuchasDead;
 
@@ -51,6 +47,40 @@ void draw(HWND handle, HBITMAP hBitmap, int iX, int iY, int iWidth, int iHeight 
 
   return ;
 }
+
+class sPlayer
+{
+public:
+  int iPositionX, iPositionY;
+  int iWidth, iHeight;
+ 
+  int iHealthPoints;
+  int iVelocityX, iVelocityY;
+
+
+  void playerMove(int dirX, int dirY) {          //{-1, 0, 1}
+    this->iPositionX += this->iVelocityX *dt*dirX;
+    this->iPositionY += this->iVelocityY *dt*dirY;
+  }
+
+
+  bool bIsAlive()  {
+    return iHealthPoints;
+  }
+  void correct() {
+    if (this->iPositionX > iWindowWidth - this->iWidth)this->iPositionX = iWindowWidth - this->iWidth;
+      if (this->iPositionX < 0)this->iPositionX = 0;
+    if (this->iPositionY > iWindowHeight - this->iHeight)this->iPositionY = iWindowHeight - this->iHeight;
+    if (this->iPositionY < 0)this->iPositionY = 0;
+  }
+
+};
+sPlayer* pPlayer;
+
+
+
+
+
 
 class sMucha
 {
@@ -110,6 +140,15 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
     
     case WM_INITDIALOG:
       
+      pPlayer = new sPlayer();
+      pPlayer->iPositionX = rand() % 600;
+      pPlayer->iPositionY = rand() % 400;
+      pPlayer->iHeight = 100;
+      pPlayer->iWidth = 100;
+      pPlayer->iHealthPoints = 10;
+      pPlayer->iVelocityX =  40;
+      pPlayer->iVelocityY =  40;
+
       for (int i = 0; i < iNumOfMuchas; i++) {
         pmchMucha[i] = new sMucha();
         pmchMucha[i]->iMuchaX = rand() % 600;
@@ -180,7 +219,10 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
 
   case WM_PAINT:
     
-   
+    HBITMAP hBitmapPlayer;
+    hBitmapPlayer= LoadBitmap(hinst, MAKEINTRESOURCE(IDB_PLAYER_80));
+    draw(hwndDig, hBitmapPlayer, pPlayer->iPositionX, pPlayer->iPositionY, pPlayer->iWidth, pPlayer->iHeight); //Wybranie bitmapy w kontekscie 
+
 
     HBITMAP hBitmapMucha;
    
@@ -200,7 +242,25 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
 
   case WM_TIMER: {
     switch (wParam) {
-    case ID_TIMER_MUCHA: {
+    case ID_TIMER_MAIN: {   
+      
+      bool dirY1 = GetKeyState(VK_UP) & 0x8000;                         //checking arrow buttons
+      bool dirY2 = GetKeyState(VK_DOWN) & 0x8000;
+      bool dirX1 = GetKeyState(VK_LEFT) & 0x8000;
+      bool dirX2 = GetKeyState(VK_RIGHT) & 0x8000;
+      
+      int dirY = dirY2 - dirY1;
+      int dirX = dirX2 - dirX1;
+
+      pPlayer->playerMove(dirX, dirY);
+      pPlayer->correct();
+
+     
+
+      RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE);
+
+
+      /*
       bAllMuchasDead = true;
       for (int i = 0; i < iNumOfMuchas; i++) {
 
@@ -210,33 +270,12 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
           
           int iRand = rand();
           if (iRand % 4 == 0)      pmchMucha[i]->muchaChange(iRand);
-               /*
-          if (iRand % 3 == 0)  pmchMucha[i]->iMuchaPredkoscX += iRand % 23 - 11;
-          if (iRand % 4 == 0)  pmchMucha[i]->iMuchaPredkoscY += iRand % 19 - 9;
-          if (iRand % 17 == 0)  pmchMucha[i]->iMuchaPredkoscY += pmchMucha[i]->iMuchaPredkoscX / 3;
-          if (iRand % 19 == 0)  pmchMucha[i]->iMuchaPredkoscX -= pmchMucha[i]->iMuchaPredkoscY / 3;
-          if (iRand % 31 == 0) {
-            if (pmchMucha[i]->iMuchaPredkoscX < 0)pmchMucha[i]->iMuchaPredkoscX = (2 * pmchMucha[i]->iMuchaPredkoscX - 80) / 3;
-            else  pmchMucha[i]->iMuchaPredkoscX = (2 * pmchMucha[i]->iMuchaPredkoscX + 80) / 3;
-          }
-          if (iRand % 37 == 0) {
-            if (pmchMucha[i]->iMuchaPredkoscY < 0)pmchMucha[i]->iMuchaPredkoscY = (2 * pmchMucha[i]->iMuchaPredkoscY - 80) / 3;
-            else  pmchMucha[i]->iMuchaPredkoscY = (2 * pmchMucha[i]->iMuchaPredkoscY + 80) / 3;
-          }                                      */
+             
           pmchMucha[i]->muchaMove();
           pmchMucha[i]->muchaCorrect();
 
-        
-          
-         
-
-
-
         }
       }
-
-
-
 
       iTimeIncs++;
       if (bAllMuchasDead == false) {
@@ -246,27 +285,10 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
         RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE);
       }
 
-      break;
-    }
+      break;       */
+    }             
 
-                         /*case ID_TIMER_REBIRTH:{
-                           for (int i = 0; i < iNumOfMuchas; i++) {
-                             if (pmchMucha[i]->bIsMuchaZywa == false) {
-                               HBITMAP hBitmapBackgrnd;
-                               hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP5));
-                               draw(hwndDig, hBitmapBackgrnd, pmchMucha[i]->iMuchaX, pmchMucha[i]->iMuchaY, pmchMucha[i]->iMuchaWidth, pmchMucha[i]->iMuchaHeight);
-                               pmchMucha[i]->iMuchaX = rand() % (iWindowWidth - pmchMucha[i]->iMuchaWidth);
-                               pmchMucha[i]->iMuchaY= rand() % (iWindowHeight- pmchMucha[i]->iMuchaHeight);
-
-                               pmchMucha[i]->iMuchaPredkoscX = rand() % 80;
-                               pmchMucha[i]->iMuchaPredkoscY = rand() % 80;
-                               pmchMucha[i]->bIsMuchaZywa = true;
-                             }
-                           }
-                           break;
-                         }
                          
-                                  */
     }
     return TRUE;
   }
@@ -306,7 +328,7 @@ int WINAPI WinMain(HINSTANCE histance, HINSTANCE hPrevinstance, PSTR szCmdLine, 
   hwndMainWindow = CreateDialog(histance, MAKEINTRESOURCE(IDD_MAINVIEW), NULL, DialogProc);
   hwndText = GetDlgItem(hwndMainWindow, IDC_BUTTONREVIVE);
 
-  SetTimer(hwndMainWindow, ID_TIMER_MUCHA, dt*100, NULL);
+  SetTimer(hwndMainWindow, ID_TIMER_MAIN, dt*100, NULL);
   //SetTimer(hwndMainWindow, ID_TIMER_REBIRTH, dTimeRebirth * 1000, NULL);
 
   ShowWindow(hwndMainWindow, iCmdShow);

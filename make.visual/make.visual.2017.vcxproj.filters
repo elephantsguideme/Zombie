@@ -40,5 +40,8 @@
     <Image Include="..\source\bialeTloDuze.bmp" />
     <Image Include="dziura.bmp" />
     <Image Include="..\source\dziura.bmp" />
+    <Image Include="..\source\bitmap6.bmp" />
+    <Image Include="player_80.bmp" />
+    <Image Include="..\source\player_80.bmp" />
   </ItemGroup>
 </Project>
