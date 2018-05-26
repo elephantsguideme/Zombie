@@ -135,17 +135,25 @@
     <Image Include="..\source\bitmap1.bmp" />
     <Image Include="..\source\bitmap4.bmp" />
     <Image Include="..\source\bitmap6.bmp" />
+    <Image Include="..\source\bullet_3.bmp" />
     <Image Include="..\source\dziura.bmp" />
     <Image Include="..\source\mucha.bmp" />
     <Image Include="..\source\mucha2.bmp" />
     <Image Include="..\source\mucharip.bmp" />
     <Image Include="..\source\mucharip2.bmp" />
     <Image Include="..\source\player_80.bmp" />
+    <Image Include="..\source\white_player_80.bmp" />
+    <Image Include="..\source\white_zombie_100.bmp" />
+    <Image Include="..\source\zombie_100.bmp" />
     <Image Include="bialetlo.bmp" />
+    <Image Include="bullet_3.bmp" />
     <Image Include="dziura.bmp" />
     <Image Include="mucha.bmp" />
     <Image Include="mucharip.bmp" />
     <Image Include="player_80.bmp" />
+    <Image Include="white_player_80.bmp" />
+    <Image Include="white_zombie_100.bmp" />
+    <Image Include="zombie_100.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
