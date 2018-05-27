@@ -43,7 +43,18 @@
     <Image Include="..\source\bitmap6.bmp" />
     <Image Include="player_80.bmp" />
     <Image Include="..\source\player_80.bmp" />
+<<<<<<< HEAD
     <Image Include="zombie_01.bmp" />
     <Image Include="..\source\zombie_01.bmp" />
+=======
+    <Image Include="zombie_100.bmp" />
+    <Image Include="..\source\zombie_100.bmp" />
+    <Image Include="white_zombie_100.bmp" />
+    <Image Include="..\source\white_zombie_100.bmp" />
+    <Image Include="white_player_80.bmp" />
+    <Image Include="..\source\white_player_80.bmp" />
+    <Image Include="bullet_3.bmp" />
+    <Image Include="..\source\bullet_3.bmp" />
+>>>>>>> 154c8b177b6df4813e6dc900fa27bd3c2e87ef9a
   </ItemGroup>
 </Project>
