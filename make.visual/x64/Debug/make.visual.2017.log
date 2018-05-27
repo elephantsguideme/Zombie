@@ -1,0 +1,13 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(377,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (kochany.program.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  main.cpp
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(63): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(64): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(101): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(102): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(148): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(149): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(256): warning C4101: 'hBitmapMucha': unreferenced local variable
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(366): warning C4244: 'argument': conversion from 'double' to 'UINT', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(367): warning C4244: 'argument': conversion from 'double' to 'UINT', possible loss of data
+  make.visual.2017.vcxproj -> C:\Users\Dominik Ługowski\Desktop\Studia\Sem VI\Zaawansowane Programowanie w Multimediach\Zombie-master\make.visual\\..\bin\make.visual.2017.exe

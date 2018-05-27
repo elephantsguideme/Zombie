@@ -43,5 +43,7 @@
     <Image Include="..\source\bitmap6.bmp" />
     <Image Include="player_80.bmp" />
     <Image Include="..\source\player_80.bmp" />
+    <Image Include="zombie_01.bmp" />
+    <Image Include="..\source\zombie_01.bmp" />
   </ItemGroup>
 </Project>

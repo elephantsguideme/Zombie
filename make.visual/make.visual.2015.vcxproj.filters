@@ -45,5 +45,23 @@
     <Image Include="..\source\mucharip.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\source\bialeTloDuze.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\mucha2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\mucharip2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\bialetlo.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\player_80.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\dziura.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

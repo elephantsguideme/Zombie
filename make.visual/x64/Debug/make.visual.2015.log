@@ -1,0 +1,9 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(377,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  main.cpp
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(62): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(63): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(117): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(118): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(213): warning C4101: 'hBitmapMucha': unreferenced local variable
+c:\users\dominik ługowski\desktop\studia\sem vi\zaawansowane programowanie w multimediach\zombie-master\source\main.cpp(317): warning C4244: 'argument': conversion from 'double' to 'UINT', possible loss of data
+  make.visual.2015.vcxproj -> C:\Users\Dominik Ługowski\Desktop\Studia\Sem VI\Zaawansowane Programowanie w Multimediach\Zombie-master\make.visual\\..\bin\kochany.program.exe
