@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AABC3FA4-11AA-4E94-816D-F83B816B131B}</ProjectGuid>
     <RootNamespace>makevisual2015</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
     <ProjectName>kochany.program</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -129,13 +129,23 @@
     <Image Include="..\source\bialeTloDuze.bmp" />
     <Image Include="..\source\bitmap1.bmp" />
     <Image Include="..\source\bitmapa.bmp" />
+    <Image Include="..\source\bullet_3.bmp" />
     <Image Include="..\source\dziura.bmp" />
     <Image Include="..\source\mucha.bmp" />
     <Image Include="..\source\mucha2.bmp" />
     <Image Include="..\source\mucharip.bmp" />
     <Image Include="..\source\mucharip2.bmp" />
     <Image Include="..\source\player_80.bmp" />
+    <Image Include="..\source\white_player_80.bmp" />
+    <Image Include="..\source\white_zombie_100.bmp" />
+    <Image Include="..\source\zombie_01.bmp" />
+    <Image Include="..\source\zombie_100.bmp" />
+    <Image Include="bitmap1.bmp" />
     <Image Include="bitmapa.bmp" />
+    <Image Include="bullet_3.bmp" />
+    <Image Include="white_player_80.bmp" />
+    <Image Include="white_zombie_100.bmp" />
+    <Image Include="zombie_100.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

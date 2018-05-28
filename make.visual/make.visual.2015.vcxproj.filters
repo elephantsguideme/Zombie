@@ -63,5 +63,35 @@
     <Image Include="..\source\dziura.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="bullet_3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="zombie_100.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\zombie_01.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\bullet_3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\zombie_100.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="white_player_80.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="white_zombie_100.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\white_player_80.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\source\white_zombie_100.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
