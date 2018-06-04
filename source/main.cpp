@@ -3,6 +3,7 @@
 #include <time.h>
 #include <windowsx.h>
 #include <math.h>
+#include <omp.h>    //open multi processor
 #include "res.h"
 
 #define ID_TIMER_MAIN 2018
@@ -23,7 +24,7 @@ double dt;
 HBITMAP hBitmapMuchaZywa, hBitmapMuchaTrup;
 HBITMAP hBitmapMuchaZywa2, hBitmapMuchaTrup2;
 const int iNumOfMuchas = 5;
-const int iNumOfZombies = 5;
+const int iNumOfZombies = 50;
 
 double dTimeRebirth;
 
@@ -391,6 +392,8 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
     //draw(hwndDig, hBitmapPlayer, pPlayer->iPositionX, pPlayer->iPositionY, pPlayer->iWidth, pPlayer->iHeight); //Wybranie bitmapy w kontekscie 
     pPlayer->playerDraw();
 
+
+#pragma omp parallel for
     for (int i = 0; i < iNumOfZombies; i++) {
       pZombie[i]->zombieDraw();
 
@@ -433,7 +436,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
         pBullet->bulletBackgrndDraw();
         pBullet->bulletMove();
       }
-
+#pragma omp parallel for
       for (int i = 0; i < iNumOfZombies; i++) {
         int iRand = rand();
 
