@@ -145,6 +145,7 @@
     <Image Include="..\source\white_player_80.bmp" />
     <Image Include="..\source\white_zombie_100.bmp" />
     <Image Include="..\source\zombie_100.bmp" />
+    <Image Include="..\source\zombie_dead_100.bmp" />
     <Image Include="bialetlo.bmp" />
     <Image Include="bullet_3.bmp" />
     <Image Include="dziura.bmp" />
@@ -154,6 +155,7 @@
     <Image Include="white_player_80.bmp" />
     <Image Include="white_zombie_100.bmp" />
     <Image Include="zombie_100.bmp" />
+    <Image Include="zombie_dead_100.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
