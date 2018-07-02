@@ -53,5 +53,11 @@
     <Image Include="..\source\bullet_3.bmp" />
     <Image Include="zombie_dead_100.bmp" />
     <Image Include="..\source\zombie_dead_100.bmp" />
+    <Image Include="..\source\bmp00001.bmp" />
+    <Image Include="..\source\bitmap8.bmp" />
+    <Image Include="czerwoneTloDuze.bmp" />
+    <Image Include="..\source\czerwoneTloDuze.bmp" />
+    <Image Include="player_rip_80.bmp" />
+    <Image Include="..\source\player_rip_80.bmp" />
   </ItemGroup>
 </Project>

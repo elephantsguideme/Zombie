@@ -25,7 +25,8 @@ HBITMAP hBitmapMuchaZywa, hBitmapMuchaTrup;
 HBITMAP hBitmapMuchaZywa2, hBitmapMuchaTrup2;
 const int iNumOfMuchas = 5;
 const int iNumOfZombies = 5;
-const int iMaxZombies = 20;
+const int iMaxZombies = 50;
+const int iStartingHP = 25;
 
 int iZombieCounter = 0;
 int iZombieIterator = 0;
@@ -111,7 +112,8 @@ public:
 
   void playerDraw() {
     HBITMAP hBitmapBackgrnd;
-    hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_PLAYER_80));
+    if(bIsAlive())hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_PLAYER_80));
+    else hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_PLAYER_RIP_80));
     draw(hwndMainWindow, hBitmapBackgrnd, this->iPositionX, this->iPositionY, this->iWidth, this->iHeight);
   }
   void playerBackgrndDraw() {
@@ -331,6 +333,14 @@ void collisionDetectionZ2Z(sZombie* pZombie1, sZombie* pZombie2) {            //
   }
 }
 
+bool collisionDetectionZ2P(sZombie* pZombie1, sPlayer* pPlayer) {            // is Zombie1 center inside Zombie2?
+  int iCenterY = pZombie1->iPositionY + pZombie1->iHeight / 2;                // zombies can overlap "a bit"
+  int iCenterX = pZombie1->iPositionX + pZombie1->iWidth / 2;
+  return(iCenterY + 10> pPlayer->iPositionY && iCenterY - 10< pPlayer->iPositionY + pPlayer->iHeight &&
+    iCenterX + 5> pPlayer->iPositionX && iCenterX - 5< pPlayer->iPositionX + pPlayer->iWidth);
+}
+
+
 
 INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -345,7 +355,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
     pPlayer->iPositionY = rand() % 200;
     pPlayer->iHeight = 80;
     pPlayer->iWidth = 58;
-    pPlayer->iHealthPoints = 10;
+    pPlayer->iHealthPoints = iStartingHP;
     pPlayer->iVelocityX = 40;
     pPlayer->iVelocityY = 40;
 
@@ -412,6 +422,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
         iZombieCounter = 0;
         iZombieIterator = 0;
         iDeadZombieCounter = 0;
+        pPlayer->iHealthPoints = iStartingHP;
 
         HBITMAP hBitmapBackgrnd;
         hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_WHTE_BACKGROUND));
@@ -458,12 +469,13 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
                    RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE); */
 
                      for (int i = 0; i < iZombieCounter; i++) {
+                       
                        if(pZombie[i]->bIsAlive()){
                        if (klikX >= pZombie[i]->iPositionX && klikX < pZombie[i]->iPositionX + pZombie[i]->iWidth && klikY >= pZombie[i]->iPositionY && klikY < pZombie[i]->iPositionY + pZombie[i]->iHeight)    {
                          pZombie[i]->zombieGetShot();  
                          if (!pZombie[i]->bIsAlive()) { 
                             pZombie[i]->zombieDeadDraw(); 
-                            iDeadZombieCounter++;
+                            if (pPlayer->bIsAlive())iDeadZombieCounter++;
                             wsprintf(buffer, "%d",iDeadZombieCounter);
 
                             SetWindowText(hwndText, buffer);
@@ -489,7 +501,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
     //HBITMAP hBitmapPlayer;
     //hBitmapPlayer= LoadBitmap(hinst, MAKEINTRESOURCE(IDB_PLAYER_80));
     //draw(hwndDig, hBitmapPlayer, pPlayer->iPositionX, pPlayer->iPositionY, pPlayer->iWidth, pPlayer->iHeight); //Wybranie bitmapy w kontekscie 
-    pPlayer->playerDraw();
+    
 
     for (int i = 0; i < iZombieCounter; i++) {
       if(pZombie[i]->bIsAlive())pZombie[i]->zombieDraw();
@@ -498,6 +510,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
     if (pBullet)
       pBullet->bulletDraw();
 
+     pPlayer->playerDraw();
     /*HBITMAP hBitmapMucha;
 
     for (int i = 0; i < iNumOfMuchas; i++) {
@@ -527,7 +540,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
       pPlayer->dirX = dirX2 - dirX1;
 
       pPlayer->playerBackgrndDraw();
-      pPlayer->playerMove();
+      if (pPlayer->bIsAlive())pPlayer->playerMove();
       pPlayer->correct();
       //pPlayer->playerDraw();
 
@@ -537,14 +550,17 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
       }
 
       for (int i = 0; i < iZombieCounter;i++) {
-        if(pZombie[i]->bIsAlive()){
+        if(pZombie[i]->bIsAlive()&&pPlayer->bIsAlive()){
           int iRand = rand();
+
 
           pZombie[i]->zombieBackgrndDraw();
           if (iRand % 15 == 0)pZombie[i]->zombieChangeDir(iRand);
           pZombie[i]->zombieMove();
 
-          pZombie[i]->zombieBackgrndDraw();
+          if (iRand % (11*pZombie[i]->iSpeed) == 0) pZombie[i]->iSpeed++;
+
+         // pZombie[i]->zombieBackgrndDraw();
           //for (int j = 0; j < i; j++) {
           //  collisionDetectionZ2Z(pZombie[i], pZombie[j]);
           //}
@@ -556,11 +572,25 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
         // pZombie[1]->zombieBackgrndDraw();
         // collisionDetectionZ2Z(pZombie[1], pZombie[2]);
         //pZombie[1]->zombieDraw();
+          if (collisionDetectionZ2P(pZombie[i], pPlayer)&& pPlayer->bIsAlive()) {
+            pPlayer->iHealthPoints--;
+            HBITMAP hBitmapBackgrnd;
+            hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_RED_BACKGRND));
+            draw(hwndDig, hBitmapBackgrnd, 0, 0, iWindowWidth, iWindowHeight);
+           
+              hBitmapBackgrnd = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_WHTE_BACKGROUND));
+              draw(hwndDig, hBitmapBackgrnd, 0, 0, iWindowWidth, iWindowHeight);
+           
+
+          }
         }
         else {
           //
         }
+        
+
       }
+
       RedrawWindow(hwndDig, NULL, NULL, RDW_INVALIDATE);
 
       break;
@@ -592,6 +622,7 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
       break;       */
     }
     case ID_TIMER_NEW_ZOMBIE: {
+     // if (!pPlayer->bIsAlive()) break;
       if (iZombieCounter < iMaxZombies)  {
       pZombie[iZombieCounter] = new sZombie();
       iZombieIterator = iZombieCounter;      
@@ -608,21 +639,27 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
 
       }
       
-
+      pZombie[iZombieIterator]->iVelocityX = 10;
+      pZombie[iZombieIterator]->iVelocityY = 10;
 
       int xWhere = 0;
       int yWhere = 0;
-      if (rand() % 20 < 10)xWhere = iWindowWidth - 53;
-      if (rand() % 20 > 10)yWhere = iWindowHeight - 100;
-
+      if (rand() % 20 < 10) {
+        xWhere = iWindowWidth - 53;
+        pZombie[iZombieIterator]->iVelocityX *= -1;
+      }
+      if (rand() % 20 > 10) {
+        yWhere = iWindowHeight - 100;
+        pZombie[iZombieIterator]->iVelocityY *= -1;
+      }
       pZombie[iZombieIterator]->iPositionX = xWhere;
       pZombie[iZombieIterator]->iPositionY = yWhere;
       pZombie[iZombieIterator]->iHeight = 100;
       pZombie[iZombieIterator]->iWidth = 53;
-      pZombie[iZombieIterator]->iHealthPoints = 3;
-      pZombie[iZombieIterator]->iVelocityX = 10;
-      pZombie[iZombieIterator]->iVelocityY = 10;
-      pZombie[iZombieIterator]->iSpeed = 10 + rand() % 10;
+      pZombie[iZombieIterator]->iHealthPoints = 2 + rand() % (iDeadZombieCounter / 5 + 1);
+     
+      
+      pZombie[iZombieIterator]->iSpeed = 8 + rand()%(iDeadZombieCounter/5+5);
       pZombie[iZombieIterator]->zombieDraw();
       
       break;
